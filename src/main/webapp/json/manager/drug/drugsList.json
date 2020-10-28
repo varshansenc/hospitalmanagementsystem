@@ -1,0 +1,32 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 1000,
+  "data": [
+    {
+      "id": "101",
+      "name": "止咳糖浆",
+      "spec": "100ml",
+      "unit": "瓶",
+      "productCompany": "哈药集团制药六厂",
+      "price": "20.0",
+      "saleStatus": 0
+    },{
+      "id": "102",
+      "name": "宝宝乐咀嚼片",
+      "spec": "2.5g",
+      "unit": "盒",
+      "productCompany": "河南太龙药业",
+      "price": "5.0",
+      "saleStatus": 0
+    },{
+      "id": "103",
+      "name": "维生素C片",
+      "spec": "60g",
+      "unit": "罐",
+      "productCompany": "汤臣倍健股份有限公司",
+      "price": "100.0",
+      "saleStatus": 1
+    }
+  ]
+}

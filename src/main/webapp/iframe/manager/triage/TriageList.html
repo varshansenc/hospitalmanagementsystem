@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>分诊管理</title>
+    <link rel="stylesheet" href="../../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../../css/font-awesome.min.css">
+</head>
+<body style="background-color:#fff;">
+
+<div class="layui-fluid">
+    <!-- 展示分诊记录表需要连接患者 start -->
+    <div class="layui-row">
+        <table class="layui-hide" id="triageList" lay-filter="triageList"></table>
+    </div>
+    <!-- 展示分诊记录表需要连接患者 end -->
+</div>
+
+<!-- 叫号、诊断按钮 -->
+<script type="text/html" id="barDemo">
+    {{#  if(d.status ==2||d.status ==1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-disabled">
+        叫号&nbsp;
+        <i class="fa fa-user-circle"></i>
+    </a>
+    {{#  }else{ }}
+    <a class="layui-btn layui-btn-xs" lay-event="call-patient">
+        叫号&nbsp;
+        <i class="fa fa-user-circle"></i>
+    </a>
+    {{#  } }}
+
+    <!-- 打开诊断页面并传入 id -->
+<!--    <a href="AddTriage.html?id={{ d.id }}"  class="layui-btn layui-btn-xs layui-btn-normal" lay-event="diagnose">-->
+    <a href="javascript: void(0);"  class="layui-btn layui-btn-xs layui-btn-normal" lay-event="diagnose">
+        诊断&nbsp;
+        <i class="fa fa-medkit"></i>
+    </a>
+</script>
+<script src="../../../layui/layui.js"></script>
+<script>
+    // 当前地址
+    var url = window.location.href;
+    var name = decodeURI(url.substring(url.lastIndexOf('=') + 1));
+    function fn() {
+        return name;
+    }
+
+    layui.use(['jquery', 'table'], function () {
+        var $ = layui.jquery; // 注册 jquery 组件
+        var table = layui.table;// 注册 table 组件
+
+        // 当前地址
+        var url = window.location.href;
+        // 获取诊断记录 id
+        // var name = decodeURI(url.substring(url.lastIndexOf('=') + 1));
+        var id = url.substring(url.indexOf('=') + 1, url.indexOf("&"));
+        console.log(id);
+
+
+
+        //渲染诊断表格数据
+        table.render({
+            elem: '#triageList' //指定原始表格元素选择器（推荐id选择器）
+            // 换成真实数据接口时要把 id 传回后台           通过科室id查询分诊信息
+            , url: '/hospital_management_system/triage/selectTriageByDId'
+            , where: {
+                id: id
+            }
+            , cols: [[//标题栏
+                //colspan即横跨的单元格数，这种情况下不用设置field和width
+                {align: 'center', title: '科室患者信息 · ' + name, colspan: 6}
+            ]
+                , [
+                    {field: 'id', title: '编号', sort: true},
+                    {field: 'name', title: '姓名' , templet: function (rowData) {
+                            return rowData.patient.name;
+                        }},
+                    {field: 'sex', title: '性别', templet: function (rowData) {
+                            return rowData.patient.sex === 1 ? '男' : '女';
+                        }},
+                    {field: 'birth', title: '出生年月日', width: 140, templet: function (rowData) {
+                            return rowData.patient.birth;
+                        }},
+                    {
+                        field: 'status', title: '状态', width: 130, templet: function (d) {
+                            if (d.status === 0) {
+                                return '<span style="color: #FF5722">待诊&nbsp;&nbsp;<i class="fa fa-question-circle"></i></span>';
+                            } else if (d.status === 1) {
+                                return '<span style="color: #337ab7;">诊断中&nbsp;&nbsp;<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i></span>';
+                            } else if (d.status === 2) {
+                                return '<span style="color: #5FB878">诊断结束&nbsp;&nbsp;<i class="fa fa-check-circle"></i></span>';
+
+                            }
+                        }
+                    },
+                    {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 320}
+                ]] //设置表头
+            , page: true //开启分页
+            , limit: 5
+            , limits: [5, 10, 20]
+            , request: {
+                pageName: 'currentPage' //页码的参数名称，默认：page
+                , limitName: 'everyPage' //每页数据量的参数名，默认：limit
+            }
+        });
+
+        //call-patient
+        //监听行工具事件
+        table.on('tool(triageList)', function (obj) {
+            var data = obj.data;
+
+            if (obj.event === 'call-patient') {
+                // 叫号
+                $.ajax({
+                    url: '/hospital_management_system/triage/updateTriageStatus',
+                    data: {
+                        tid: data.id,
+                        status: 1
+                    },
+                    dataType: 'json',
+                    type: 'post',
+                    success: function (result) {
+                        if(result.code === 0) {
+                            layer.msg("叫号成功");
+                            table.reload("triageList");
+                        }
+                    },
+                    error: function () {
+                        layer.msg("服务器繁忙");
+                    }
+                });
+
+            } else if(obj.event === 'diagnose') {
+                var patient = encodeURI(JSON.stringify(data));
+                location.href = '/hospital_management_system/iframe/manager/triage/AddTriage.html?patient=' + patient + "&dname=" + name;
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

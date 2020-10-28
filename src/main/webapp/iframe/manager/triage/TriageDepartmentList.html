@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>医院分诊管理系统首页</title>
+    <link rel="stylesheet" href="../../../layui/css/layui.css">
+    <style>
+        .flow-default {
+            width: 100%;
+            height: 800px;
+            overflow: auto;
+            font-size: 0;
+        }
+
+        .flow-default li {
+            margin: 5px;
+            background-color: #eee;
+            display: inline-block;
+            font-size: 14px;
+            width: 24%;
+            /*height: 100px;*/
+            text-align: center;
+        }
+
+        .flow-default img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .patient-item-head {
+            padding: 10px 0;
+            color: #333;
+            border-color: #ddd;
+        }
+
+        .patient-item-body {
+            padding: 15px;
+            border: 1px solid #eee;
+            background-color: #fff;
+        }
+
+        .patient-item-footer {
+            padding: 10px 15px;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+    </style>
+</head>
+
+<body style="background-color:#fff;">
+
+<fieldset class="layui-elem-field site-demo-button"
+          style="margin: 15px;padding:15px;">
+    <legend>分诊信息</legend>
+    <ul class="flow-default" id="triage_list"></ul>
+</fieldset>
+
+
+<script src="../../../layui/layui.js"></script>
+<script>
+    layui.use(['jquery', 'flow', 'layer'], function () {
+        var $ = layui.jquery; // 注册 jquery 组件
+        var flow = layui.flow;// 注册流加载组件
+
+        flow.load({
+            elem: '#triage_list' //流加载容器
+            , done: function (page, next) { //执行下一页的回调
+
+                // $.ajax({
+                //     url: '/hospital_management_system/triage/selectAllTriage',
+                //     data: {},
+                //     dataType: 'json',
+                //     type: 'post',
+                //     success: function (result) {
+                //         console.log(result);
+                //     },
+                //     error: function () {
+                //         layer.msg("服务器繁忙");
+                //     }
+                // });
+
+                // 通过 ajax 请求获取分诊表数据
+                $.getJSON('/hospital_management_system/triage/selectAllTriage', {}, function (result) {
+                    // "pages": totalCount % 32 == 0 ? totalCount / 32 : totalCount / 32 + 1
+
+                    var lis = [];
+                    layui.each(result.data, function (index, item) {
+                        lis.push('<li>' +
+                            '	<div class="layui-row patient-item-head">' +
+                            '		<span class="layui-badge layui-bg-gray" style="font-size: 18px;padding:5px 10px;">' +
+                            '			<i class="layui-icon layui-icon-home"></i>&nbsp;&nbsp;' + item.departmentName +
+                            ' 		</span>' +
+                            '	</div>' +
+                            '   <div class="layui-row patient-item-body">' +
+                            '       <span style="float: left">待诊断人数: <span class="layui-badge" style="background-color: #d9534f;">' + item.patientCount + '</span></span>' +
+                            '       <a style="float: right;background-color: #5cb85c;" href="TriageList.html?id=' + item.id + '&dname=' + item.departmentName + '" class="layui-btn layui-btn-xs">' +
+                            '       	开诊&nbsp;&nbsp;<i class="layui-icon layui-icon-next"></i>' +
+                            '		</a>' +
+                            '   </div>' +
+                            '   <div class="layui-row patient-item-footer">' +
+                            '   	<span style="color: #337ab7;float: right">地址：' + item.area + '</span>' +
+                            '	</div>' +
+                            '</li>')
+                    });
+                    //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+                    //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+                    next(lis.join(''), page < result.pages);
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

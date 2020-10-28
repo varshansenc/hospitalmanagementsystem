@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shz.dao.IRotaDao">
+
+	<resultMap id="rotaMap" type="Rota">
+		<id property="id" column="id"/>
+		<result property="rotaDate" column="rota_date"/>
+		<result property="did" column="did"/>
+		<result property="uid" column="uid"/>
+		
+		<association property="department" javaType="Department">
+			<result property="name" column="dname"/>
+		</association>
+		<association property="user" javaType="com.shz.entity.User">
+			<result property="realname" column="uname"/>
+			<result property="mobile" column="mobile"/>
+		</association>
+	</resultMap>
+	
+	<select id="selectAllRota" resultMap="rotaMap">
+		select hr.id rid,
+		       rota_date,
+		       did,
+		       uid,
+		       hd.name dname,
+			   hu.realname uname,
+			   hu.mobile
+		from hms_rota hr
+		left join hms_department hd
+		on hr.did = hd.id
+		left join hms_user hu
+		on hr.uid = hu.id
+	</select>
+	
+	
+</mapper>

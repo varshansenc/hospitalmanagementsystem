@@ -1,0 +1,39 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 1000,
+  "data": [
+    {
+      "id": "101",
+      "name": "止咳糖浆",
+      "productCompany": "哈药集团制药六厂",
+      "examStartDate": "2018年12月23日",
+      "examEndDate": "2018年12月23日",
+      "examStatus": "0"
+    },
+    {
+      "id": "104",
+      "name": "止咳糖浆",
+      "productCompany": "哈药集团制药六厂",
+      "examStartDate": "2018年12月23日",
+      "examEndDate": "2018年12月23日",
+      "examStatus": "3"
+    },
+    {
+      "id": "102",
+      "name": "宝宝乐咀嚼片",
+      "productCompany": "河南太龙药业",
+      "examStartDate": "2018年12月23日",
+      "examEndDate": "2018年12月23日",
+      "examStatus": "1"
+    },
+    {
+      "id": "103",
+      "name": "维生素C片",
+      "productCompany": "汤臣倍健股份有限公司",
+      "examStartDate": "2018年12月23日",
+      "examEndDate": "2018年12月23日",
+      "examStatus": "2"
+    }
+  ]
+}

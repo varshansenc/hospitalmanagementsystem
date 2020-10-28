@@ -1,0 +1,37 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 1000,
+  "data": [
+    {
+      "id": "101",
+      "departmentName": "骨科",
+      "telephone": "12345678",
+      "area": "10楼A区"
+    },
+    {
+      "id": "102",
+      "departmentName": "骨科",
+      "telephone": "12345678",
+      "area": "10楼A区"
+    },
+    {
+      "id": "103",
+      "departmentName": "骨科",
+      "telephone": "12345678",
+      "area": "10楼A区"
+    },
+    {
+      "id": "104",
+      "departmentName": "骨科",
+      "telephone": "12345678",
+      "area": "10楼A区"
+    },
+    {
+      "id": "105",
+      "departmentName": "骨科",
+      "telephone": "12345678",
+      "area": "10楼A区"
+    }
+  ]
+}

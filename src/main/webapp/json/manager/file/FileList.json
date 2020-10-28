@@ -1,0 +1,35 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 1000,
+  "data": [
+    {
+      "id": "101",
+      "fileName": "诊断文档模板.doc",
+      "filePath": "/upload",
+      "fileSize": "100M",
+      "upTime": "2018年12月21日20:56:19"
+    },
+    {
+      "id": "102",
+      "fileName": "诊断文档模板2.doc",
+      "filePath": "/upload",
+      "fileSize": "100M",
+      "upTime": "2018年12月21日20:56:19"
+    },
+    {
+      "id": "103",
+      "fileName": "诊断文档模板3.doc",
+      "filePath": "/upload",
+      "fileSize": "100M",
+      "upTime": "2018年12月21日20:56:19"
+    },
+    {
+      "id": "104",
+      "fileName": "诊断文档模板4.doc",
+      "filePath": "/upload",
+      "fileSize": "100M",
+      "upTime": "2018年12月21日20:56:19"
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>诊断</title>
+    <link rel="stylesheet" href="../../../layui/css/layui.css">
+
+</head>
+<body style="background-color:#fff;">
+<div class="layui-fluid">
+    <fieldset class="layui-elem-field site-demo-button layui-col-md-offset2 layui-col-md8"
+              style="margin-top: 30px;padding:15px;">
+        <legend>诊断信息</legend>
+        <form class="layui-form layui-form-pane" lay-filter="add_triage" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">患者编号</label>
+                <div class="layui-input-block">
+                    <!-- 隐藏文本域 用于存放 id -->
+                    <input type="hidden" name="id">
+                    <input type="text" name="pid" disabled class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">患者姓名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="patientName" disabled class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">科室编号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="did" disabled class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">科室</label>
+                <div class="layui-input-block">
+                    <input type="text" name="departmentName" disabled class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">医生编号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="uid" disabled class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">医生姓名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" disabled class="layui-input">
+                </div>
+            </div>
+
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">症状描述</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请填写症状描述" class="layui-textarea"
+                              name="illnessInfo"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">症状意见</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请填写症状意见" class="layui-textarea"
+                              name="advice"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item" style="text-align: center">
+                <button class="layui-btn" lay-submit="" lay-filter="add_triage_btn">完成</button>
+            </div>
+        </form>
+    </fieldset>
+</div>
+
+
+<script src="../../../layui/layui.js"></script>
+<script>
+    layui.use(['jquery', 'form', 'layedit'], function () {
+        var $ = layui.jquery; // 注册 jquery 组件
+        var form = layui.form;// 注册 form 组件
+        var layedit = layui.layedit;// 注册 layedit 组件
+
+        // 当前地址
+        var url = window.location.href;
+        // 获取分诊记录
+        var triage = JSON.parse(decodeURI(url.substring(url.indexOf("=") + 1, url.lastIndexOf("&"))));
+        // console.log(triage1);
+        // 获取科室名称
+        var dname = decodeURI(url.substring(url.lastIndexOf('=') + 1));
+
+        // 根据分诊id查询
+        $.ajax({
+            url: '/hospital_management_system/triage/selectTriageByTid',
+            data: {tid: triage.id},
+            dataType: 'json',
+            type: 'post',
+            success: function (result) {
+                console.log(result);
+                $.ajax({
+                    url: '/hospital_management_system/user/getUserInSession',
+                    data: {},
+                    dataType: 'json',
+                    type: 'post',
+                    success: function (result1) {
+                        // 表单回显数据
+                        // 表单回显数据
+                        form.val('add_triage', {
+                            "id": result.tid,
+                            "pid": result.pid,
+                            "patientName": result.pname,
+                            "did": result.id,
+                            "departmentName": result.departmentName,
+                            "uid": result1.id,
+                            "username": result1.realname,
+                            "illnessInfo": result.illnessInfo,
+                            "advice": result.advice,
+                        });
+                    },
+                    error: function () {
+                        layer.msg("服务器繁忙");
+                    }
+                });
+            },
+            error: function () {
+                layer.msg("服务器繁忙");
+            }
+        });
+
+        // 从session中获取用户名
+        /*$.ajax({
+            url: '/hospital_management_system/user/getUserInSession',
+            data: {},
+            dataType: 'json',
+            type: 'post',
+            success: function (result) {
+                // 表单回显数据
+                form.val('add_triage', {
+                    "id": triage.id,
+                    "pid": triage1.pid,
+                    "patientName": triage1.patient.name,
+                    "did": triage1.did,
+                    "departmentName": dname,
+                    "uid": result.id,
+                    "username": result.realname,
+                    "illnessInfo": triage1.illnessInfo,
+                    "advice": triage1.advice,
+                });
+            },
+            error: function () {
+                layer.msg("服务器繁忙");
+            }
+        });*/
+
+
+        //表单提交
+        form.on('submit(add_triage_btn)', function (data) {
+            console.log(data.elem); //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form); //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+            $.ajax({
+                url: '/hospital_management_system/triage/updateTriage',
+                data: data.field,
+                dataType: 'json',
+                type: 'post',
+                success: function (result) {
+                    layer.msg(result.msg);
+                },
+                error: function () {
+                    layer.msg("服务器繁忙");
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

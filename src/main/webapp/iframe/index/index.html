@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+</head>
+<body style="background-color:#fff;">
+
+<div class="layui-fluid">
+
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-card" style="background-color:#EEEEEE;">
+            <div class="layui-card-header" style="text-align: center;">
+                <h1>欢迎使用医院分诊管理系统</h1>
+            </div>
+            <div class="layui-card-body">
+                系统简介
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-row layui-col-space10">
+        <!-- 近期值班表 start -->
+        <div class="layui-col-md6">
+            <table id="rota" class="layui-hide"></table>
+        </div>
+        <!-- 近期值班表 end -->
+        <!-- 通知 start -->
+        <div class="layui-col-md6">
+            <table id="notice" class="layui-hide"></table>
+        </div>
+        <!-- 通知 end -->
+    </div>
+
+</div>
+
+<script src="../../layui/layui.js"></script>
+
+<script>
+    layui.use(['jquery', 'table'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+
+        //渲染近期值班表格数据
+        table.render({
+            elem: '#rota' //指定原始表格元素选择器（推荐id选择器）
+            , url: '/hospital_management_system/rota/selectAllRota'
+            , skin: 'line' //行边框风格
+            , cols: [[//标题栏:colspan即横跨的单元格数，这种情况下不用设置field和width
+                {align: 'center', title: '近期值班表', colspan: 4}
+            ]
+                , [
+                    {field: 'rotaDate', title: '日期', sort: true, align: 'center'},
+                    {field: 'departmentName', title: '科室', align: 'center', templet: function (rowData) {
+                            return rowData.department.departmentName;
+                        }},
+                    {field: 'userName', title: '值班医生', align: 'center', templet: function (rowData) {
+                            return rowData.user.realname;
+                        }},
+                    {field: 'mobile', title: '联系方式', align: 'center', templet: function (rowData) {
+                            return rowData.user.mobile;
+                        }}
+                ]] //设置表头
+            , page: true //开启分页
+            , limit: 5
+            , limits: [5, 10, 20]
+            , request: {
+                pageName: 'currentPage' //页码的参数名称，默认：page
+                , limitName: 'everyPage' //每页数据量的参数名，默认：limit
+            }
+        });
+
+
+        //渲染通知表格数据
+        table.render({
+            elem: '#notice' //指定原始表格元素选择器（推荐id选择器）
+            , url: '/hospital_management_system/notice/selectAllNotice'
+            , skin: 'line' //行边框风格
+            , cols: [[//标题栏
+                {align: 'center', title: '通知', colspan: 2, style: 'background-color: #009688; color: #fff;'} //colspan即横跨的单元格数，这种情况下不用设置field和width
+            ]
+                , [
+                    {field: 'title', title: '通知', align: 'center'},
+                    {field: 'noticeDate', title: '时间', sort: true, align: 'center', templet: function (rowData) {
+                            return rowData.noticeDate;
+                        }}
+                ]] //设置表头
+            , page: true //开启分页
+            , limit: 5
+            , limits: [5, 10, 20]
+            , request: {
+                pageName: 'currentPage' //页码的参数名称，默认：page
+                , limitName: 'everyPage' //每页数据量的参数名，默认：limit
+            }
+        });
+    })
+</script>
+</body>
+</html>

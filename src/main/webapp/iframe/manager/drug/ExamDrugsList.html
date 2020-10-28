@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../../layui/css/layui.css">
+    <!--font-awesome字体图标库-->
+    <link rel="stylesheet" type="text/css" href="../../../css/font-awesome.min.css"/>
+    <title>药品审核</title>
+</head>
+<body style="background-color:#fff;">
+
+<div class="layui-fluid">
+    <!-- 展示药品管理 start -->
+    <div class="layui-row">
+        <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;padding: 15px;">
+            <legend>条件搜索</legend>
+            <div>
+                <form class="layui-form layui-form-pane" lay-filter="search-drug" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">药品名</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="name" autocomplete="off" placeholder="请输入药品关键词"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="search-drug">
+                                <i class="layui-icon layui-icon-search"></i>
+                                搜索
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </fieldset>
+
+
+        <table class="layui-hide" id="drugList" lay-filter="drugList"></table>
+    </div>
+    <!-- 展示药品管理 end -->
+</div>
+
+<!-- 编辑、删除按钮 -->
+<script type="text/html" id="barDemo">
+
+    <a class="layui-btn layui-btn-xs" style="background-color: #5bc0de;" lay-event="view-info">
+        <i class="fa fa-info-circle"></i>&nbsp;
+        查看详情
+    </a>
+    <a class="layui-btn layui-btn-xs" style="background-color: #5cb85c;" lay-event="submit-audit">
+        <i class="fa fa-check-circle"></i>&nbsp;
+        提交审核
+    </a>
+    <!--{{# if(d.examStatus === 0) { }}
+        <a class="layui-btn layui-btn-xs" style="background-color: #5cb85c;" lay-event="submit-audit">
+            <i class="fa fa-check-circle"></i>&nbsp;
+            提交审核
+        </a>
+    {{# } else { }}
+        <a class="layui-btn layui-btn-disabled layui-btn-xs">
+            <i class="fa fa-check-circle"></i>&nbsp;
+            已提交审核
+        </a>
+    {{# } }}-->
+
+
+</script>
+
+
+<script src="../../../layui/layui.js"></script>
+<script>
+    layui.use(['jquery', 'table', 'form'], function () {
+        var $ = layui.jquery; // 注册 jquery 组件
+        var table = layui.table;// 注册 table 组件
+        var form = layui.form;// 注册 form 组件
+
+        //渲染药品表格数据
+        table.render({
+            elem: '#drugList' //指定原始表格元素选择器（推荐id选择器）
+            , url: '/hospital_management_system/exam/selectAllExamDrug'
+            , cellMinWidth: 80
+            , cols: [[
+                {field: 'id', title: '编号', sort: true, align: 'center'},
+                {field: 'name', title: '药品名', width: 200, align: 'center', templet: function (d) {
+                        return d.drug.name;
+                    }},
+                {field: 'productCompany', title: '生产企业', width: 90, align: 'center', templet: function (d) {
+                        return d.drug.productCompany;
+                    }},
+                {field: 'examStartDate', title: '开始时间', align: 'center'},
+                {field: 'examEndDate', title: '结束时间', align: 'center'},
+                {
+                    field: 'examStatus', title: '审核状态', width: 140, templet: function (d) {
+                        if (d.examStatus === 0) {
+                            return '<span class="layui-badge layui-bg-green">未审核</span>';
+                        } else if (d.examStatus === 1) {
+                            return '<span class="layui-badge layui-bg-cyan" style=" ">审核中</span>';
+                        } else if (d.examStatus === 2) {
+                            return '<span class="layui-badge" style="background-color: #5FB878;">审核通过</span>';
+
+                        } else if (d.examStatus === 3) {
+                            return '<span class="layui-badge" style="background-color: #d9534f;">审核未通过</span>';
+                        }
+                    }, align: 'center'
+                },
+                {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 300, align: 'center'}
+            ]] //设置表头
+            , page: true //开启分页
+            , limit: 5
+            , limits: [5, 10, 20]
+            , request: {
+                pageName: 'currentPage' //页码的参数名称，默认：page
+                , limitName: 'everyPage' //每页数据量的参数名，默认：limit
+            }
+        });
+
+        //搜索药品表单提交
+        form.on('submit(search-drug)', function (data) {
+            console.log(data.elem); //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form); //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+            //根据条件重新渲染表格
+            table.reload('drugList', {
+                url: '/hospital_management_system/exam/selectAllExamDrug'
+                , where: {"name": data.field.name} //设定异步数据接口的额外参数
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //监听行工具事件
+        table.on('tool(drugList)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'view-info') {
+                // 查看详情
+                layer.open({
+                    type: 2,
+                    title: '查看药品信息',
+                    maxmin: true,
+                    shadeClose: true, //点击遮罩关闭层
+                    area: ['75%', '80%'],
+                    content: '/hospital_management_system/iframe/manager/drug/ViewDrug.html?drug=' + encodeURI(JSON.stringify(data.drug))
+                    // content: '/hospital_management_system/iframe/manager/drug/ViewDrug.html?id=' + data.id
+                });
+
+            } else if (obj.event === 'submit-audit') {
+                //提交审核
+                layer.open({
+                    type: 2,
+                    title: '药品审核',
+                    maxmin: true,
+                    shadeClose: true, //点击遮罩关闭层
+                    area: ['75%', '90%'],
+                    content: '/hospital_management_system/iframe/manager/drug/ExamDrug.html?exam=' + encodeURI(JSON.stringify(data))
+                });
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

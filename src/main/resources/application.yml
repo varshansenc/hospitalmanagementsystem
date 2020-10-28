@@ -1,0 +1,33 @@
+# 设置端口号
+server:
+  port: 8182
+  servlet:
+    context-path: /hospital_management_system       # 设置项目访问路径
+    jsp:
+      init-parameters:
+        development: true     # 热部署
+
+# 数据源
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///grade3?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT-8&useSSL=false
+    username: shan
+    password: 123456
+  resources:
+    static-locations: file:D:\baizhi\Grade3\workspace\Grade3\fileuploadserver   # 设置虚拟目录
+  servlet:
+    multipart:
+      max-file-size: 1MB              # 设置单个上传文件最大值
+      max-request-size: 10MB          # 设置单次请求最大值
+#  mvc:
+#    static-path-pattern: /iframe/**
+
+# mybatis-plus配置
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.shz.entity
+
+# page-helper配置
+pagehelper:
+  reasonable: true

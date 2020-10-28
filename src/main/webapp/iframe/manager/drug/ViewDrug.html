@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>采购药品</title>
+    <link rel="stylesheet" href="../../../layui/css/layui.css">
+
+</head>
+<body style="background-color:#fff;">
+<div class="layui-fluid">
+    <!-- 添加 -->
+    <div class="layui-row">
+        <fieldset class="layui-elem-field site-demo-button layui-col-md-offset2 layui-col-md8"
+                  style="margin-top: 30px;padding:15px;">
+            <legend>查看药品信息</legend>
+            <form class="layui-form layui-form-pane" lay-filter="view-drug" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">药品名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" disabled class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">规格</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="spec" disabled class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">单位</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="unit" disabled class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">生产企业</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="productCompany" disabled class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">生产日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="productDate" disabled class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">保质期至</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="okDate" disabled class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">进价</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="importPrice" disabled class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">零售价</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="price" disabled class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">销售状态</label>
+                        <div class="layui-input-block">
+                            <input type="radio" disabled name="saleStatus" value="0" title="是" checked="">
+                            <input type="radio" disabled name="saleStatus" value="1" title="否">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">是否进口</label>
+                        <div class="layui-input-block">
+                            <input type="radio" disabled name="isImport" value="0" title="是" checked="">
+                            <input type="radio" disabled name="isImport" value="1" title="否">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">产品说明</label>
+                    <div class="layui-input-block">
+                    <textarea disabled class="layui-textarea"
+                              name="description"></textarea>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+</div>
+
+<script src="../../../layui/layui.js"></script>
+<script>
+    layui.use(['jquery', 'form', 'laydate'], function () {
+        var $ = layui.jquery; // 注册 jquery 组件
+        var form = layui.form;// 注册 form 组件
+        var laydate = layui.laydate;// 注册 laydate 组件
+
+        // 当前地址
+        var url = window.location.href;
+        // 获取药品 id
+        var drug = decodeURI(url.substring(url.lastIndexOf('=') + 1));
+        // console.log(JSON.parse(drug));
+
+        //根据id 通过 ajax 请求获取药品信息，并对数据进行回显
+
+        //表单数据回显
+        form.val('view-drug', JSON.parse(drug));
+        // form.val('view-drug', {
+        //     id: "101",
+        //     name: "止咳糖浆",
+        //     spec: "100ml",
+        //     unit: "瓶",
+        //     productCompany: "哈药集团制药六厂",
+        //     productDate: "2020-02-05",
+        //     okDate: "2020-02-03",
+        //     importPrice: "10.0",
+        //     price: "20.0",
+        //     saleStatus: 0,
+        //     isImport: 1,
+        //     description: "没事来一瓶"
+        // });
+        
+
+    })
+</script>
+</body>
+</html>

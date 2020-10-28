@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shz.dao.IExamDao">
+
+	<resultMap id="examMap" type="Exam">
+		<id property="id" column="id"/>
+		<result property="examStatus" column="exam_status"/>
+		<result property="examAdvice" column="exam_advice"/>
+		<result property="examStartDate" column="exam_start_date"/>
+		<result property="examEndDate" column="exam_end_date"/>
+		<result property="did" column="d_id"/>
+		
+		<association property="drug" javaType="Drug">
+			<id property="id" column="d_id"/>
+			<result property="name" column="name"/>
+			<result property="spec" column="spec"/>
+			<result property="unit" column="unit"/>
+			<result property="productCompany" column="product_company"/>
+			<result property="productDate" column="product_date"/>
+			<result property="okDate" column="ok_date"/>
+			<result property="importPrice" column="import_price"/>
+			<result property="price" column="price"/>
+			<result property="saleStatus" column="sale_status"/>
+			<result property="isImport" column="is_import"/>
+			<result property="description" column="description"/>
+		</association>
+	</resultMap>
+	
+	<select id="selectAllExamDrug" resultMap="examMap">
+		select he.id, exam_status, exam_advice, exam_start_date, exam_end_date, d_id,
+		       hd.name, spec, unit, product_company, product_date, ok_date, import_price, price, sale_status, is_import, description
+		from hms_exam he
+		left join hms_drug hd
+		on he.d_id = hd.id
+		<where>
+			<if test="name != null and name != ''">
+				hd.name like concat('%', #{name}, '%')
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateExamById">
+		update hms_exam set exam_advice = #{examAdvice}, exam_status = #{examStatus}, exam_end_date = sysdate() where id = #{id}
+	</update>
+	
+</mapper>

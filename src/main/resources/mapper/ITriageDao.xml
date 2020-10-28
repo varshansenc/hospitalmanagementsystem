@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shz.dao.ITriageDao">
+
+	<resultMap id="triageVoMap" type="TriageVo">
+		<result property="id" column="id"/>
+		<result property="departmentName" column="name"/>
+		<result property="area" column="area"/>
+		<result property="patientCount" column="cnt"/>
+		
+		<result property="pid" column="pid"/>
+		<result property="pname" column="pname"/>
+		<result property="tid" column="tid"/>
+	</resultMap>
+	
+	<resultMap id="triageMap" type="Triage">
+		<id property="id" column="id"/>
+		<result property="illnessInfo" column="illness_info"/>
+		<result property="advice" column="advice"/>
+		<result property="pid" column="pid"/>
+		<result property="did" column="did"/>
+		<result property="uid" column="uid"/>
+		
+		<association property="patient" column="pid" select="com.shz.dao.IPatientDao.selectById"/>
+	</resultMap>
+
+	<select id="selectAllTriage" resultMap="triageVoMap">
+		select hd.id, hd.name, hd.area, count(hd.id) cnt
+		from hms_department hd
+		left join hms_triage ht
+		on hd.id = ht.did
+		group by hd.id, hd.name, hd.area
+		order by hd.id
+	</select>
+	
+	<select id="selectTriageByDId" resultMap="triageMap">
+		select * from hms_triage where did = #{id}
+	</select>
+	
+	<select id="selectTriageByTid" resultMap="triageVoMap">
+		select hd.id,
+		       hd.name,
+		       hd.area,
+		       ht.id tid,
+		       hp.id pid,
+		       hp.name pname
+		from hms_triage ht
+		left join hms_department hd
+		on ht.did = hd.id
+		left join hms_patient hp
+		on ht.pid = hp.id
+		where ht.id = #{tid}
+	</select>
+	
+	<update id="updateTriageStatus">
+		update hms_triage set status = #{status} where id = #{tid}
+	</update>
+
+</mapper>

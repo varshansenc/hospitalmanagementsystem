@@ -1,0 +1,37 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 1000,
+  "data": [
+    {
+      "id": "101",
+      "oprater": "菩提老祖",
+      "content": "诊断了病人wangyx",
+      "logDate": "2018年12月21日20:56:19"
+    },
+    {
+      "id": "102",
+      "oprater": "猪八戒",
+      "content": "诊断了病人wangyx",
+      "logDate": "2018年12月21日20:56:19"
+    },
+    {
+      "id": "103",
+      "oprater": "二货",
+      "content": "诊断了病人wangyx",
+      "logDate": "2018年12月21日20:56:19"
+    },
+    {
+      "id": "104",
+      "oprater": "唐僧",
+      "content": "诊断了病人wangyx",
+      "logDate": "2018年12月21日20:56:19"
+    },
+    {
+      "id": "105",
+      "oprater": "白骨精",
+      "content": "诊断了病人wangyx",
+      "logDate": "2018年12月21日20:56:19"
+    }
+  ]
+}

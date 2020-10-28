@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>上传文件</title>
+    <link rel="stylesheet" href="../../../layui/css/layui.css">
+</head>
+<body>
+<fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;text-align: center;height: 170px;">
+	<legend>上传文件</legend>
+	<button style="margin-top: 50px;" type="button" class="layui-btn" id="uploadFile">
+		<i class="layui-icon"></i>上传文件
+	</button>
+</fieldset>
+
+<script src="../../../layui/layui.js"></script>
+<script>
+    layui.use(['jquery', 'upload'], function () {
+        var $ = layui.jquery; // 注册 jquery 组件
+        var upload = layui.upload;// 注册 upload 组件
+		//指定允许上传的文件类型
+		upload.render({
+			elem: '#uploadFile'
+			,url: '' //改成您自己的上传接口
+			,accept: 'file' //普通文件
+			,done: function(res){
+				layer.msg('上传成功');
+			}
+		});
+
+    });
+</script>
+</body>
+</html>

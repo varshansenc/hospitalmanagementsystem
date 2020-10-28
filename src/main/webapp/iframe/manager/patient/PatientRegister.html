@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>患者挂号</title>
+    <link rel="stylesheet" href="../../../layui/css/layui.css">
+
+</head>
+<body style="background-color:#fff;">
+<div class="layui-fluid">
+    <!-- 患者挂号 -->
+    <div class="layui-row">
+        <fieldset class="layui-elem-field site-demo-button layui-col-md-offset2 layui-col-md8"
+                  style="margin-top: 30px;padding:15px;">
+            <legend>患者挂号</legend>
+            <form class="layui-form layui-form-pane" lay-filter="regist-patient" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">患者编号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="pid" disabled class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">患者姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" disabled class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">选择科室</label>
+                    <div class="layui-input-block">
+						<select name="did" id="department">
+<!--							<option value="">请选择科室</option>-->
+<!--							<option value="骨科">骨科</option>-->
+<!--							<option value="脑壳">脑壳</option>-->
+<!--							<option value="皮肤科">皮肤科</option>-->
+<!--							<option value="眼科">眼科</option>-->
+						</select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item" style="text-align: center;">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit="" lay-filter="regist-patient-btn">挂号</button>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+</div>
+<script src="../../../layui/layui.js"></script>
+<script>
+    layui.use(['jquery', 'form'], function () {
+        var $ = layui.jquery; //注册 jquery 组件
+        var form = layui.form;  //注册 form 组件
+
+        // 科室下拉列表数据
+        $.ajax({
+            url: '/hospital_management_system/department/selectAll',
+            data: {},
+            dataType: 'json',
+            type: 'post',
+            success: function (result) {
+                if(result.code === 0) {
+                    var html = "<option value=''>请选择科室</option>";
+                    $(result.data).each(function (index, obj) {
+                        html += "<option value='" + obj.id + "'>" + obj.departmentName + "</option>";
+                    });
+                    $("#department").html(html);
+                    form.render('select');
+                }
+            },
+            error: function () {
+                layer.msg("服务器繁忙");
+            }
+        });
+
+        // 当前地址
+        var url = window.location.href;
+        // 获取 patient 对象数据
+        var patientStr = url.substring(url.lastIndexOf('=') + 1);
+        console.log(patientStr);
+        // 使用 decodeURI 函数，对上述 patient json 字符串进行解码
+        var patient = JSON.parse(decodeURI(patientStr));
+
+        // 患者挂号表单数据的回显
+        form.val("regist-patient", { //regist-patient 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+            "pid": patient.id // "name": "value"
+            , "name": patient.name // "name": "value"
+        });
+
+        // 挂号
+        form.on('submit(regist-patient-btn)', function (data) {
+            console.log(data.elem); //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form); //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+            $.ajax({
+                url: '/hospital_management_system/triage/addTriage',
+                data: data.field,
+                dataType: 'json',
+                type: 'post',
+                success: function (result) {
+                    if(result.code === 0) {
+                        parent.layer.msg(result.msg);
+                        parent.layer.closeAll();
+                    }
+                },
+                error: function () {
+                    layer.msg("服务器繁忙");
+                }
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    })
+</script>
+</body>
+</html>

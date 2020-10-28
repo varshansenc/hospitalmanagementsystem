@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>添加科室</title>
+    <link rel="stylesheet" href="../../../layui/css/layui.css">
+</head>
+<body style="background-color:#fff;">
+
+<div class="layui-fluid">
+
+    <!-- 添加科室 start -->
+    <div class="layui-row" style="margin-top: 20px;">
+        <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;padding:15px;text-align: center;">
+            <legend>添加科室</legend>
+            <form id="addForm" class="layui-form layui-form-pane" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">科室名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" autocomplete="off" placeholder="请填写科室名称"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">办公室电话</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="telephone" autocomplete="off" placeholder="请填写办公室电话"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">所在区域</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="area" autocomplete="off" placeholder="请填写所在区域" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit="" lay-filter="add-department">添加科室</button>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+
+    <!-- 添加科室 end -->
+    <!-- 条件搜索 -->
+    <div class="layui-row">
+        <form class="layui-form layui-form-pane" action="" style="display: inline-block;">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="text" name="departmentName" autocomplete="off" placeholder="请填写科室名称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="search-department">搜索</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- 展示科室 start -->
+    <div class="layui-row">
+        <table class="layui-hide" id="departmentList" lay-filter="departmentList"></table>
+    </div>
+    <!-- 展示科室 end -->
+
+</div>
+<!-- 头部工具栏 -->
+<script type="text/html" id="toolbarDemo">
+    <button class="layui-btn layui-btn-sm" lay-event="deleteSelected">删除选中</button>
+</script>
+<!-- 编辑、删除按钮 -->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">
+        <i class="layui-icon layui-icon-edit"></i>
+        编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs"
+       style="background-color: #d9534f;" lay-event="del">
+        <i class="layui-icon layui-icon-delete"></i>
+        删除</a>
+</script>
+
+<script src="../../../layui/layui.js"></script>
+
+<script>
+    layui.use(['jquery', 'form', 'table'], function () {
+        var $ = layui.jquery;
+        var form = layui.form;
+        var table = layui.table;
+
+        //添加科室表单提交
+        form.on('submit(add-department)', function (data) {
+            console.log(data.elem); //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form); //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+            $.ajax({
+                url: '/hospital_management_system/department/addDepartment',
+                data: data.field,
+                dataType: 'json',
+                type: 'post',
+                success: function (result) {
+                    $("#addForm")[0].reset();
+                    layer.msg("添加成功");
+                    table.reload("departmentList");
+                },
+                error: function () {
+                    layer.msg("服务器繁忙");
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //搜索科室表单提交
+        form.on('submit(search-department)', function (data) {
+            console.log(data.elem); //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form); //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+            //根据条件重新渲染表格
+            table.reload('departmentList', {
+                url: '/hospital_management_system/department/selectAllDepartments'
+                , where: {"departmentName": data.field.departmentName} //设定异步数据接口的额外参数
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        //渲染科室数据
+        table.render({
+            elem: '#departmentList' //指定原始表格元素选择器（推荐id选择器）
+            , url: '/hospital_management_system/department/selectAllDepartments'
+            , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolBar: true
+            , cols: [[
+                {type: 'checkbox', fixed: 'left'},
+                {field: 'id', title: '编号', sort: true},
+                {field: 'departmentName', title: '名称'},
+                {field: 'telephone', title: '办公室电话'},
+                {field: 'area', title: '所在区域'},
+                {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 160}
+            ]] //设置表头
+            , page: true //开启分页
+            , limit: 5
+            , limits: [5,10,20,50]
+            , request: {
+                pageName: 'currentPage' //页码的参数名称，默认：page
+                , limitName: 'everyPage' //每页数据量的参数名，默认：limit
+            }
+        });
+        //监听头工具栏事件
+        table.on('toolbar(departmentList)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            if (obj.event === 'deleteSelected') {
+                var data = checkStatus.data;
+                var departmentIds = [];
+                $.each(data, function (index, rowData) {
+                    departmentIds[index] = rowData.id;
+                });
+                layer.confirm("确认要删除选中行吗？", function (obj) {
+                    $.ajax({
+                        url: '/hospital_management_system/department/deleteSelected',
+                        data: JSON.stringify(departmentIds),
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (result) {
+                            table.reload("departmentList");
+                            layer.msg("删除成功");
+                        },
+                        error: function () {
+                            layer.msg("服务器繁忙");
+                        }
+                    });
+                });
+            }
+        });
+
+        //监听行工具事件
+        table.on('tool(departmentList)', function (obj) {
+            var data = obj.data;
+            console.log(obj);
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    $.ajax({
+                        url: '/hospital_management_system/department/delDepartmentById',
+                        data: {id: data.id},
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (result) {
+                            obj.del();
+                            layer.msg("删除成功");
+                        },
+                        error: function () {
+                            layer.msg("服务器繁忙");
+                        }
+                    });
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                layer.prompt({
+                    title: '科室名称',
+                    formType: 2
+                    , value: data.departmentName
+                }, function (value, index) {
+                    obj.update({
+                        departmentName: value
+                    });
+                    layer.close(index);
+                    $.ajax({
+                        url: '/hospital_management_system/department/updateDepartmentById',
+                        data: {
+                            id: data.id,
+                            name: value,
+                            telephone: data.telephone,
+                            area: data.area
+                        },
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (result) {
+                            if(result.code === 0) {
+                                layer.msg(result.msg);
+                            }
+                        },
+                        error: function () {
+                            layer.msg("服务器繁忙");
+                        }
+                    })
+                    // layer.prompt({
+                    //     title: '办公电话',
+                    //     formType: 2
+                    //     , value: data.telephone
+                    // }, function (value, index) {
+                    //     obj.update({
+                    //         telephone: value
+                    //     });
+                    //     layer.close(index);
+                    //     layer.prompt({
+                    //         title: '所在区域',
+                    //         formType: 2
+                    //         , value: data.area
+                    //     }, function (value, index) {
+                    //         obj.update({
+                    //             area: value
+                    //         });
+                    //         layer.close(index);
+                    //
+                    //     });
+                    // });
+                });
+            }
+        });
+
+    })
+</script>
+</body>
+</html>

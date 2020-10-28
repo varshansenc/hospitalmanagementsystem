@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+	
+	<!--
+		<appender>标签包含2个属性：name、class
+		name属性：指定appender名称;  class属性：指定目的地类型 （比如ConsoleAppender、FileAppender等）
+		class属性的值决定了<appender>标签包含的子标签的种类。
+	 -->
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<!--定义项目的日志输出格式-->
+		<encoder>
+			<!-- 指定输出格式
+				%d{} :表示时间
+				%thread:请求记录所在的线程名
+				%-5level：用5位显示请求级别
+				%logger{36}：输出logger名，{36}表示logger名最大占用的字符位数，{0}表示最简短logger名（不包含包名）
+				%msg：日志消息
+				%n是换行符
+			 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{0} %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+		<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>D:\log\idea\file.log</file>
+			<encoder>
+				<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{0} %msg%n</pattern>
+			</encoder>
+		</appender>
+	
+	<!--项目中根日志控制-->
+	<!--日志级别 DEBUG < INFO < WARN < ERROR -->
+	<root level="INFO">
+		<appender-ref ref="stdout"/>
+		<appender-ref ref="file"/>
+	</root>
+	
+	<!--项目中指定包日志控制 -->
+	<logger name="com.shz.dao" level="DEBUG"/>
+
+</configuration>

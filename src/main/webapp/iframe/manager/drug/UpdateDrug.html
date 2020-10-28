@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>更新药品信息</title>
+    <link rel="stylesheet" href="../../../layui/css/layui.css">
+
+</head>
+<body style="background-color:#fff;">
+<div class="layui-fluid">
+    <!-- 更新药品信息 -->
+    <div class="layui-row">
+        <fieldset class="layui-elem-field site-demo-button layui-col-md-offset2 layui-col-md8"
+                  style="margin-top: 30px;padding:15px;">
+            <legend>更新药品信息</legend>
+            <form class="layui-form layui-form-pane" lay-filter="update-drug" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">药品名</label>
+                        <div class="layui-input-block">
+                            <!-- 隐藏域，用于保存药品id -->
+                            <input type="hidden" name="id">
+                            <input type="text" name="name" autocomplete="off" placeholder="请填写药品名"
+                                   class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">规格</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="spec" autocomplete="off" placeholder="请填写规格"
+                                   class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">单位</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="unit" autocomplete="off" placeholder="请填写单位"
+                                   class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">生产企业</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="productCompany" autocomplete="off" placeholder="请填写生产企业"
+                                   class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">生产日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="productDate" id="productDate" placeholder="请填写生产日期"
+                                   autocomplete="off" class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">保质期至</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="okDate" id="okDate" placeholder="请填写保质期至"
+                                   autocomplete="off" class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">进价</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="importPrice" autocomplete="off" placeholder="请填写进价"
+                                   class="layui-input" lay-verify="required|number">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">零售价</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="price" autocomplete="off" placeholder="请填写零售价"
+                                   class="layui-input" lay-verify="required|number">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">销售状态</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="saleStatus" value="0" title="是" checked="">
+                            <input type="radio" name="saleStatus" value="1" title="否">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">是否进口</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="isImport" value="0" title="是" checked="">
+                            <input type="radio" name="isImport" value="1" title="否">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">产品说明</label>
+                    <div class="layui-input-block">
+                    <textarea placeholder="请填写产品说明" class="layui-textarea"
+                              name="description"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: center;">
+                    <div class="layui-inline">
+                        <button class="layui-btn" lay-submit="" lay-filter="update-drug">更新药品</button>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+</div>
+
+<script src="../../../layui/layui.js"></script>
+<script>
+    layui.use(['jquery', 'form', 'laydate'], function () {
+        var $ = layui.jquery; // 注册 jquery 组件
+        var form = layui.form;// 注册 form 组件
+        var laydate = layui.laydate;// 注册 laydate 组件
+
+        //生产日期
+        laydate.render({
+            elem: '#productDate'
+        });
+        //保质期至
+        laydate.render({
+            elem: '#okDate'
+        });
+
+        // 当前地址
+        var url = window.location.href;
+        // 获取药品 id
+        // var id = url.substring(url.lastIndexOf('=') + 1);
+        var drug = JSON.parse(decodeURI(url.substring(url.lastIndexOf('=') + 1)));
+        console.log(drug);
+        //根据id 通过 ajax 请求获取药品信息，并对数据进行回显
+
+        //表单数据回显
+        form.val("update-drug", drug);
+        // form.val('update-drug', {
+        //     id: "101",
+        //     name: "止咳糖浆",
+        //     spec: "100ml",
+        //     unit: "瓶",
+        //     productCompany: "哈药集团制药六厂",
+        //     productDate: "2020-02-05",
+        //     okDate: "2020-02-03",
+        //     importPrice: "10.0",
+        //     price: "20.0",
+        //     saleStatus: 0,
+        //     isImport: 1,
+        //     description: "没事来一瓶"
+        // });
+
+        //采购药品表单提交
+        form.on('submit(update-drug)', function (data) {
+            console.log(data.elem); //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form); //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+
+            $.ajax({
+                url: '/hospital_management_system/drug/updateDrug',
+                data: data.field,
+                dataType: 'json',
+                type: 'post',
+                success: function (result) {
+                    console.log(result);
+                    if(result.code === 0) {
+                        $("form")[0].reset();
+                        parent.layer.closeAll();
+                        parent.layui.table.reload("drugList");
+                    }
+                },
+                error: function () {
+                    layer.msg("服务器繁忙");
+                }
+            });
+
+            // 在 ajax 的 success 回调函数中加上如下代码可以自动关闭 iframe 弹出层
+            /**
+             * success: function (result) {
+                    if (result.message == "ok") {
+                        layer.msg('更新成功');
+                        //延迟执行
+                        setTimeout(function () {
+                            //关闭 iframe 弹出层代码----------
+                            //先得到当前 iframe 层的索引
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index); //再执行关闭
+                        }, 1000);
+                    } else {
+                        layer.msg('更新失败');
+                        setTimeout(function () {
+                            window.location.reload()
+                        }, 2000);
+                    }
+                }
+             */
+            return false;
+        });
+
+    })
+</script>
+</body>
+</html>
